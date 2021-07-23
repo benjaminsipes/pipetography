@@ -457,13 +457,15 @@ class PostProcNodes:
     Inputs:
         BIDS_dir (str): Path to BIDS directory
         subj_template (dict): template directory for tck, dwi, T1, mask files
+        sub_list (list): subjects IDs list generated from BIDS layout
+        ses_list (list): sessions IDs listgenerated from BIDS layout
         skip_tuples (tuple): [('subject', 'session')] string pair to skip
     """
 
-    def __init__(self, BIDS_dir, subj_template, skip_tuples):
-        sub_list, ses_list, layout = ppt.get_subs(
-            BIDS_dir
-        )  # BIDS directory for layout and iterables
+    def __init__(self, BIDS_dir, subj_template, sub_list, ses_list, skip_tuples):
+        # filter & create sub-graphs for subjects and session combos:
+        sub_iter, ses_iter = ppt.filter_workflow(BIDS_dir, sub_list, ses_list, skip_tuples)
+
         # Create BIDS output folder list for datasink
         BIDSFolders = [
             (
@@ -476,10 +478,7 @@ class PostProcNodes:
         preproc_dir = os.path.join(
             BIDS_dir, "derivatives", "pipetography"
         )  # BIDS derivatives directory containing preprocessed outputs and streamline outputs
-        all_sub_ses_combos = set(product(sub_list, ses_list))
-        filtered_combos = list(all_sub_ses_combos - set(skip_tuples))
-        sub_iter = [tup[0] for tup in filtered_combos]
-        ses_iter = [tup[1] for tup in filtered_combos]
+
         # DWI input:
         self.subject_source = Node(
             IdentityInterface(fields=["subject_id", "session_id"]),

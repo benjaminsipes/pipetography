@@ -10,6 +10,7 @@ bids.config.set_option('extension_initial_dot', True)
 from nipype.pipeline import Node, Workflow
 
 import pipetography.nodes as nodes
+import pipetography.core as ppt
 
 # Cell
 
@@ -28,6 +29,7 @@ class connectome:
         """
         self.bids_dir = BIDS_dir
         self.atlas_list = atlas_list
+        self.sub_list, self.ses_list, self.layout = ppt.get_subs(BIDS_dir)
         self.skip_combos = skip_tuples
         self.subject_template = {
             'tck': os.path.join(self.bids_dir, 'derivatives', 'streamlines','sub-{subject_id}', 'ses-{session_id}', 'sub-{subject_id}_ses-{session_id}_gmwmi2wm.tck'),
@@ -43,7 +45,12 @@ class connectome:
         """
         Create postprocessing nodes, and make output path substitutions so outputs are BIDS compliant.
         """
-        self.PostProcNodes = nodes.PostProcNodes(BIDS_dir=self.bids_dir, subj_template = self.subject_template, skip_tuples = self.skip_combos)
+        self.PostProcNodes = nodes.PostProcNodes(
+            BIDS_dir=self.bids_dir,
+            subj_template = self.subject_template,
+            sub_list = self.sub_list,
+            ses_list = self.ses_list,
+            skip_tuples = self.skip_combos)
         self.PostProcNodes.linear_reg.iterables = [('moving_image', self.atlas_list)]
         self.workflow = None
 
