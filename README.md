@@ -25,13 +25,12 @@ Since most usages will be on HPC resources, I <em>highly recommend</em> that you
      - `sudo singularity build {image_file_name}.sif singularity.def`
      
  - OR pull the built singularity image from cloud library:
-    - `singularity pull --arch amd64 library://axiezai/pipetography/pipetography-fsl6.0.3:latest`
+    - `singularity pull --arch amd64 library://axiezai/pipetography/pipetography-0.3.10:latest`
 
 ### Docker:
 
  - Docker often encounters permission problems on HPC resources, using the docker container is only recommended if you have `sudo` permissions to the machine. 
  - Use the [`Dockerfile`](Dockerfile) in this repo to build your own Docker container.
- - `docker pull axiezai/pipetography:0.3.9`
  
 ### Usage:
  - To run the singularity container interactively, you will need a few flags:

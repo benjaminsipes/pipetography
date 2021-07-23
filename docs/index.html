@@ -70,13 +70,13 @@ nb_path: "index.ipynb"
 </li>
 <li><p>OR pull the built singularity image from cloud library:</p>
 <ul>
-<li><code>singularity pull --arch amd64 library://axiezai/pipetography/pipetography-fsl6.0.3:latest</code></li>
+<li><code>singularity pull --arch amd64 library://axiezai/pipetography/pipetography-0.3.10:latest</code></li>
 </ul>
 </li>
 </ul>
 <h3 id="Docker:">Docker:<a class="anchor-link" href="#Docker:"> </a></h3><ul>
 <li>Docker often encounters permission problems on HPC resources, using the docker container is only recommended if you have <code>sudo</code> permissions to the machine. </li>
-<li><code>docker pull axiezai/pipetography:0.3.9</code></li>
+<li>Use the <code>Dockerfile</code> in this repo to build your own Docker container.</li>
 </ul>
 <h3 id="Usage:">Usage:<a class="anchor-link" href="#Usage:"> </a></h3><ul>
 <li>To run the singularity container interactively, you will need a few flags:<ul>
