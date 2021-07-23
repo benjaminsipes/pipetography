@@ -30,6 +30,7 @@ Since most usages will be on HPC resources, I <em>highly recommend</em> that you
 ### Docker:
 
  - Docker often encounters permission problems on HPC resources, using the docker container is only recommended if you have `sudo` permissions to the machine. 
+ - Use the [`Dockerfile`](Dockerfile) in this repo to build your own Docker container.
  - `docker pull axiezai/pipetography:0.3.9`
  
 ### Usage:
