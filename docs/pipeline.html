@@ -283,8 +283,8 @@ Matlab Compiler Runtime 2012 version in Freesurfer Path found. (MCRv80)
  &#39;sub_template&#39;: {&#39;anat&#39;: &#39;sub-{subject_id}/ses-{session_id}/anat/sub-{subject_id}_ses-{session_id}_T1w.nii.gz&#39;,
   &#39;dwi&#39;: &#39;sub-{subject_id}/ses-{session_id}/dwi/sub-{subject_id}_ses-{session_id}_dwi.nii.gz&#39;,
   &#39;b_files&#39;: &#39;sub-{subject_id}/ses-{session_id}/dwi/sub-{subject_id}_ses-{session_id}_dwi.bv*&#39;},
- &#39;PreProcNodes&#39;: &lt;pipetography.nodes.PreProcNodes at 0x7f83eb2a69a0&gt;,
- &#39;ACPCNodes&#39;: &lt;pipetography.nodes.ACPCNodes at 0x7f83eb2a6820&gt;,
+ &#39;PreProcNodes&#39;: &lt;pipetography.nodes.PreProcNodes at 0x7fbc38f2d280&gt;,
+ &#39;ACPCNodes&#39;: &lt;pipetography.nodes.ACPCNodes at 0x7fbc38f2da30&gt;,
  &#39;workflow&#39;: None}</pre>
 </div>
 
@@ -312,6 +312,61 @@ Matlab Compiler Runtime 2012 version in Freesurfer Path found. (MCRv80)
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#usage</span>
 <span class="n">preproc_dwi</span><span class="o">.</span><span class="n">connect_nodes</span><span class="p">(</span><span class="n">rpe_design</span><span class="o">=</span><span class="s1">&#39;-rpe_none&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current intermediate file output destination is </span><span class="si">{</span><span class="n">preproc_dwi</span><span class="o">.</span><span class="n">workflow</span><span class="o">.</span><span class="n">base_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Current intermediate file output destination is /Users/xxie/sample_data/dwipreproc/BIDS_output/derivatives
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You'd usually want to separate the final outputs (<code>datasink</code> directory) from the intermediate files:</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">preproc_dwi</span><span class="o">.</span><span class="n">workflow</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="s2">&quot;/Users/xxie/sample_data/dwipreproc/BIDS_output/code/pipetography&quot;</span>
 </pre></div>
 
     </div>
@@ -350,8 +405,8 @@ Matlab Compiler Runtime 2012 version in Freesurfer Path found. (MCRv80)
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>210915-15:21:38,766 nipype.workflow INFO:
-	 Generated workflow graph: /Users/xxie/sample_data/dwipreproc/BIDS_output/derivatives/pipetography/graph/preprocessing.png (graph2use=flat, simple_form=True).
+<pre>210915-15:32:09,507 nipype.workflow INFO:
+	 Generated workflow graph: /Users/xxie/sample_data/dwipreproc/BIDS_output/code/pipetography/graph/preprocessing.png (graph2use=flat, simple_form=True).
 </pre>
 </div>
 </div>
@@ -377,7 +432,7 @@ Matlab Compiler Runtime 2012 version in Freesurfer Path found. (MCRv80)
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="n">Image</span><span class="p">(</span><span class="s1">&#39;/Users/xxie/sample_data/dwipreproc/BIDS_output/derivatives/pipetography/graph/preprocessing.png&#39;</span><span class="p">)</span>
+<span class="n">Image</span><span class="p">(</span><span class="s1">&#39;/Users/xxie/sample_data/dwipreproc/BIDS_output/code/pipetography/graph/preprocessing.png&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>

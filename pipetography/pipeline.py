@@ -799,7 +799,7 @@ class pipeline:
         self.workflow.write_graph(
             graph2use=graph_type,
             dotfilename=os.path.join(
-                self.bids_dir, "derivatives", "pipetography", "graph", "preprocessing.dot"
+                self.bids_dir, "code", "pipetography", "graph", "preprocessing.dot"
             ),
         )
 
