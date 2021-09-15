@@ -117,7 +117,7 @@ bash -c "source activate base
       "pybids" \
       "fastcore" \
       "nilearn" \
-      "pipetography==0.3.10""
+      "pipetography==0.3.11""
 rm -rf ~/.cache/pip/*
 sync
 
@@ -186,7 +186,7 @@ echo '{
 \n          "pybids",
 \n          "fastcore",
 \n          "nilearn",
-\n          "pipetography==0.3.10"
+\n          "pipetography==0.3.11"
 \n        ]
 \n      }
 \n    ],
