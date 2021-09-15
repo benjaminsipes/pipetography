@@ -25,7 +25,7 @@ Since most usages will be on HPC resources, I <em>highly recommend</em> that you
      - `sudo singularity build {image_file_name}.sif singularity.def`
      
  - OR pull the built singularity image from cloud library:
-    - `singularity pull --arch amd64 library://axiezai/pipetography/pipetography-0.3.10:latest`
+    - `singularity pull --arch amd64 library://axiezai/pipetography/pipetography:latest`
 
 ### Docker:
 
@@ -38,7 +38,7 @@ Since most usages will be on HPC resources, I <em>highly recommend</em> that you
      - `-B` flag to bind your BIDS directory into the container.
  - Example: 
      - `singularity shell -e -B <BIDS_DIR>:<SINGULARITY_BIDS_DIR> {Path to singularity .sif}` will start an interactive shell.
-     - `singualrity exec -e -B <BIDS_DIR>:<SINGULARITY_BIDS_DIR> {Path to singularity .sif} python dwi_pipeline.py` will execute the input python code. See [pipeline](https://axiezai.github.io/pipetography/pipeline.html) for an example.
+     - `singualrity exec -e -B <BIDS_DIR>:<SINGULARITY_BIDS_DIR> {Path to singularity .sif} python dwi_pipeline.py` will execute the input python code. See [pipeline](https://axiezai.github.io/pipetography/pipeline.html) for an example python script that preprocesses BIDS DWI data.
 
 ### Creating your own environment and install `pipetography` as a Python module:
 

@@ -70,7 +70,7 @@ nb_path: "index.ipynb"
 </li>
 <li><p>OR pull the built singularity image from cloud library:</p>
 <ul>
-<li><code>singularity pull --arch amd64 library://axiezai/pipetography/pipetography-0.3.10:latest</code></li>
+<li><code>singularity pull --arch amd64 library://axiezai/pipetography/pipetography:latest</code></li>
 </ul>
 </li>
 </ul>
@@ -86,7 +86,7 @@ nb_path: "index.ipynb"
 </li>
 <li>Example: <ul>
 <li><code>singularity shell -e -B &lt;BIDS_DIR&gt;:&lt;SINGULARITY_BIDS_DIR&gt; {Path to singularity .sif}</code> will start an interactive shell.</li>
-<li><code>singualrity exec -e -B &lt;BIDS_DIR&gt;:&lt;SINGULARITY_BIDS_DIR&gt; {Path to singularity .sif} python dwi_pipeline.py</code> will execute the input python code. See <a href="https://axiezai.github.io/pipetography/pipeline.html">pipeline</a> for an example.</li>
+<li><code>singualrity exec -e -B &lt;BIDS_DIR&gt;:&lt;SINGULARITY_BIDS_DIR&gt; {Path to singularity .sif} python dwi_pipeline.py</code> will execute the input python code. See <a href="https://axiezai.github.io/pipetography/pipeline.html">pipeline</a> for an example python script that preprocesses BIDS DWI data.</li>
 </ul>
 </li>
 </ul>
