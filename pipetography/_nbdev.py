@@ -79,7 +79,10 @@ index = {"get_subs": "00_core.ipynb",
          "PreProcNodes": "02_nodes.ipynb",
          "ACPCNodes": "02_nodes.ipynb",
          "PostProcNodes": "02_nodes.ipynb",
-         "connectome": "03_connectomes.ipynb"}
+         "connectome": "03_connectomes.ipynb",
+         "Make5ttFSLInputSpec": "00_core.ipynb",
+         "Make5ttFSLOutputSpec": "00_core.ipynb",
+         "Make5ttFSL": "00_core.ipynb"}
 
 modules = ["core.py",
            "pipeline.py",

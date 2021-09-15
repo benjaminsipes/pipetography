@@ -911,6 +911,60 @@ def mask2seedtuple(mask_file, grid_size):
     return seed_grid_tuple
 
 # Internal Cell
+
+class Make5ttFSLInputSpec(PipetographyBaseInputSpec):
+    in_file = File(
+        exists=True,
+        argstr="%s",
+        mandatory=True,
+        position=-2,
+        desc="input image"
+    )
+    t2_file = File(
+        exists=True,
+        argstr="-t2 %s",
+        desc="Provide a T2-weighted image in addition to the default T1-weighted image"
+    )
+    out_file = File(
+        argstr="%s",
+        mandatory=True,
+        position=-1,
+        desc="output image"
+    )
+    mask = File(
+        exists=True,
+        argstr="-mask %s",
+        desc="Manually provide a brain mask, rather than deriving one in the script"
+    )
+    premasked=traits.Bool(
+        argstr="-premasked",
+        desc="Indicate that brain masking has already been applied to the input image"
+    )
+    nocrop=traits.Bool(
+        argstr="-nocrop",
+        desc="Do NOT crop the resulting 5TT image to reduce its size"
+    )
+    sgm_amyg_hip=traits.Bool(
+        argstr="-sgm_amyg_hipp",
+        desc="Represent the amygdalae and hippocampi as sub-cortical grey matter in the 5TT image"
+    )
+
+class Make5ttFSLOutputSpec(TraitedSpec):
+    out_file = File(argstr="%s", exists=True, desc="output image")
+
+class Make5ttFSL(CommandLine):
+    """
+    Interface with Mrtrix3's 5ttgen command
+    """
+    _cmd="5ttgen fsl"
+    input_spec=Make5ttFSLInputSpec
+    output_spec=Make5ttFSLOutputSpec
+
+    def _list_outputs(self):
+        outputs=self.output_spec().get()
+        outputs["out_file"] = os.path.abspath(self.inputs.out_file)
+        return outputs
+
 class gmwmiInputSpec(CommandLineInputSpec):
     in_file = File(
         exists=True,
