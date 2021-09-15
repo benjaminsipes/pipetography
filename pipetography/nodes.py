@@ -21,7 +21,6 @@ from nipype.interfaces.mrtrix3.utils import (
     TensorMetrics,
     DWIExtract,
     MRMath,
-    Generate5tt,
 )
 from nipype.interfaces.mrtrix3.preprocess import MRDeGibbs, DWIBiasCorrect, ResponseSD
 from nipype.interfaces.mrtrix3.reconst import (
@@ -432,7 +431,7 @@ class ACPCNodes:
         )
 
         self.gen_5tt = Node(
-            Generate5tt(algorithm="fsl", out_file="T1w_space-acpc_seg-5tt.mif"),
+            ppt.Make5ttFSL(premasked=True, out_file="T1w_space-acpc_seg-5tt.mif"),
             name="mrtrix_5ttgen",
         )
         self.gmwmi = Node(ppt.gmwmi(out_file="gmwmi.nii.gz"), name="5tt2gmwmi")

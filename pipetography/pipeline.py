@@ -250,8 +250,14 @@ class pipeline:
                     [("out_file", "preprocessed.@t1_acpc_aligned")],
                 ),
                 ## Adding WM mask extraction to replace original recon all section
+                ## WM Mask extraction section
                 (
                     self.ACPCNodes.ACPC_warp,
+                    self.ACPCNodes.t1_bet,
+                    [("out_file", "in_file")],
+                ),
+                (
+                    self.ACPCNodes.t1_bet,
                     self.ACPCNodes.gen_5tt,
                     [("out_file", "in_file")],
                 ),
@@ -284,12 +290,6 @@ class pipeline:
                     self.ACPCNodes.convert2wm,
                     self.PreProcNodes.datasink,
                     [("out_file", "preprocessed.@wm")],
-                ),
-                ## WM Mask extraction section
-                (
-                    self.ACPCNodes.ACPC_warp,
-                    self.ACPCNodes.t1_bet,
-                    [("out_file", "in_file")],
                 ),
                 (
                     self.ACPCNodes.ACPC_warp,
