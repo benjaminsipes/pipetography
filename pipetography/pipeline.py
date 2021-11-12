@@ -206,8 +206,13 @@ class pipeline:
                 ),
                 (
                     self.PreProcNodes.select_files,
-                    self.ACPCNodes.reduceFOV,
+                    self.ACPCNodes.T1Reorient,
                     [("anat", "in_file")],
+                ),
+                (
+                    self.ACPCNodes.T1Reorient,
+                    self.ACPCNodes.reduceFOV,
+                    [("out_file", "in_file")],
                 ),
                 (
                     self.PreProcNodes.select_files,
@@ -614,8 +619,13 @@ class pipeline:
                 [
                     (
                         self.PreProcNodes.select_files,
-                        self.PreProcNodes.mrconvert,
+                        self.PreProcNodes.DWIReorient,
                         [("dwi", "in_file")],
+                    ),
+                    (
+                        self.PreProcNodes.DWIReorient,
+                        self.PreProcNodes.mrconvert,
+                        [("out_file", "in_file")],
                     ),
                     (
                         self.PreProcNodes.select_files,
@@ -669,13 +679,23 @@ class pipeline:
                     ),
                     (
                         self.PreProcNodes.select_files,
-                        self.PreProcNodes.mrconvert1,
+                        self.PreProcNodes.DWIReorientForward,
                         [("dwi", "in_file")],
                     ),
                     (
                         self.PreProcNodes.select_files,
-                        self.PreProcNodes.mrconvert2,
+                        self.PreProcNodes.DWIReorientReverse,
                         [("rdwi", "in_file")],
+                    ),
+                    (
+                        self.PreProcNodes.DWIReorientForward,
+                        self.PreProcNodes.mrconvert1,
+                        [("out_file", "in_file")],
+                    ),
+                    (
+                        self.PreProcNodes.DWIReorientReverse,
+                        self.PreProcNodes.mrconvert2,
+                        [("out_file", "in_file")],
                     ),
                     (
                         self.PreProcNodes.sub_grad_files1,

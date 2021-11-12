@@ -34,13 +34,13 @@ from nipype.interfaces import fsl
 # Cell
 class PreProcNodes:
     """
-    Initiate DWI preprocessing pipeline nodes.
+    Initiate DWI preprocessing pipeline nodes. This doesn't connect the nodes into a pipeline.
 
     Inputs:
         - bids_dir (str) -
         - bids_path_template (dict) - template for file naming conventions
         - bids_ext (str) -
-        - rpe_design (str)
+        - rpe_design (str) - This is necessary to initiate nodes for single DWI volume, or additional nodes for reverse volume.
         - mrtrix_nthreads (int)
         - img_resol (str)
         - sub_list (List)
@@ -62,7 +62,7 @@ class PreProcNodes:
     ):
         # filtter & create sub-graphs for subjects and sessions combos
         sub_iter, ses_iter = ppt.filter_workflow(bids_dir, sub_list, ses_list, exclude_list)
-        # Create BIDS output folder list for datasink
+        # Create BIDS nodes:
         BIDSFolders = [
             (
                 "preprocessed/ses-%ssub-%s" % (session, subject),
@@ -71,7 +71,7 @@ class PreProcNodes:
             for session in ses_list
             for subject in sub_list
         ]
-
+        # IdentityInterface for file input:
         self.subject_source = Node(
             IdentityInterface(fields=["subject_id", "session_id"]),
             iterables=[("subject_id", sub_iter), ("session_id", ses_iter)],
@@ -81,7 +81,9 @@ class PreProcNodes:
         self.subject_source.inputs.ext = bids_ext
 
         # reverse phase encoding design selection
+        # If only one DWI volume:
         if rpe_design == "-rpe_none":
+            # Gradient files input:
             self.sub_grad_files = Node(
                 Function(
                     input_names=["sub_dwi", "ext"],
@@ -92,6 +94,15 @@ class PreProcNodes:
                 name="sub_grad_files",
             )
             self.sub_grad_files.inputs.ext = bids_ext
+            # Reorient DWI to standard orientation for FSL:
+            self.DWIReorient = Node(
+                fsl.utils.Reorient2Std(
+                    args = '-m mnitransformation.mat',
+                    out_file = 'dwi_reorient.nii.gz'
+                ),
+                name = "DWIReorient"
+            )
+            # Convert from nifti to mrtrix3's mif format:
             self.mrconvert = Node(
                 ppt.Convert(
                     out_file="raw_dwi.mif",
@@ -100,7 +111,9 @@ class PreProcNodes:
                 ),
                 name="mrtrix_image",
             )
+        # If there are two DWI images with second volume being reverse direction:
         elif rpe_design == "-rpe_all":
+            # Forward direction gradient file
             self.sub_grad_files1 = Node(
                 Function(
                     input_names=["sub_dwi", "ext"],
@@ -110,6 +123,7 @@ class PreProcNodes:
                 ),
                 name="sub_grad_files1",
             )
+            # Reverse direction gradient file
             self.sub_grad_files2 = Node(
                 Function(
                     input_names=["sub_dwi", "ext"],
@@ -121,6 +135,22 @@ class PreProcNodes:
             )
             self.sub_grad_files1.inputs.ext = bids_ext
             self.sub_grad_files2.inputs.ext = bids_ext
+            # Forward and reverses direction reorientation to FSL standard
+            self.DWIReorientForward = Node(
+                fsl.utils.Reorient2Std(
+                    args = '-m forward_mni_transformation.mat',
+                    out_file = 'dwi_reorient_forward.nii.gz'
+                ),
+                name = "DWIReorientForward",
+            )
+            self.DWIReorientReverse = Node(
+                fsl.utils.Reorient2Std(
+                    args = '-m reverse_mni_transformation.mat',
+                    out_file = 'dwi_reorient_reverse.nii.gz'
+                ),
+                name = "DWIReorientReverse",
+            )
+            # Conversion from nifti to mif
             self.mrconvert1 = Node(
                 ppt.Convert(
                     out_file="raw_dwi1.mif",
@@ -349,8 +379,12 @@ class PreProcNodes:
             ),
             name="datasink",
         )
-        substitutions = [("_subject_id_", "sub-"), ("_session_id_", "ses-")]
-        substitutions.extend(BIDSFolders)
+        substitutions = [
+            ("_subject_id_", "sub-"),
+            ("_session_id_", "ses-"),
+            *BIDSFolders,
+        ]
+
         self.datasink.inputs.substitutions = substitutions
         print(
             "Data sink (output folder) is set to {}".format(
@@ -367,6 +401,13 @@ class ACPCNodes:
     """
 
     def __init__(self, MNI_template):
+        self.T1Reorient = Node(
+            fsl.utils.Reorient2Std(
+                args = '-m mnitransformation.mat',
+                out_file = 'T1_reoriented.nii.gz'
+            ),
+            name = 'T1Reorient'
+        )
         self.reduceFOV = Node(
             fsl.utils.RobustFOV(
                 out_transform="roi2full.mat", out_roi="robustfov.nii.gz"
