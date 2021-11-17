@@ -23,7 +23,7 @@ class connectome:
          - atlas_list (List of strings): names of atlases: aal, brainnectome, desikan-killiany, default is set to brainnectome for now.
     """
 
-    def __init__(self, BIDS_dir, atlas_list, skip_tuples=[()]):
+    def __init__(self, BIDS_dir, atlas_list, skip_tuples=[()], debug=False):
         """
         Initialize workflow nodes
         """
@@ -85,12 +85,19 @@ class connectome:
                 (self.PostProcNodes.connectome, self.PostProcNodes.datasink, [('out_file', 'connectomes.@connectome')]),
                 (self.PostProcNodes.distance, self.PostProcNodes.datasink, [('out_file', 'connectomes.@distance')])
             ])
-        self.workflow.config['execution'] = {
-                                            'use_relative_paths':'True',
-                                            'hash_method': 'content',
-                                            'stop_on_first_crash': 'True',
-                                            }
-
+        if not debug:
+            self.workflow.config["execution"] = {
+                "use_relative_paths": "True",
+                "hash_method": "content",
+                "stop_on_first_crash": "True",
+            }
+        else:
+           self.workflow.config["execution"] = {
+                "use_relative_paths": "True",
+                "hash_method": "content",
+                "stop_on_first_crash": "True",
+                "remove_node_directories": "True",
+            }
     def draw_pipeline(self, graph_type='orig'):
         """
         Visualize workflow

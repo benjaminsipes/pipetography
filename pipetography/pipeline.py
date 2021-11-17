@@ -35,6 +35,7 @@ class pipeline:
         regrid=True,
         mrtrix_nthreads=0,
         skip_tuples=[()],
+        debug=False
     ):
         self.bids_dir = BIDS_dir
         self.rpe_design = rpe_design
@@ -804,11 +805,19 @@ class pipeline:
                     ),
                 ]
             )
-        self.workflow.config["execution"] = {
-            "use_relative_paths": "True",
-            "hash_method": "content",
-            "stop_on_first_crash": "True",
-        }
+        if not debug:
+            self.workflow.config["execution"] = {
+                "use_relative_paths": "True",
+                "hash_method": "content",
+                "stop_on_first_crash": "True",
+            }
+        else:
+           self.workflow.config["execution"] = {
+                "use_relative_paths": "True",
+                "hash_method": "content",
+                "stop_on_first_crash": "True",
+                "remove_node_directories": "True",
+            }
 
     def draw_pipeline(self, graph_type="orig"):
         """
