@@ -25,6 +25,7 @@ class pipeline:
         - regrid (bool): Whether  to resample DWI to  1mm MNI template, defaults to True.
         - mrtrix_nthreads (int): Number of threads for mrtrix3 algorithm. If zero, the number of available CPUs will be used. Default is 0.
         - skip_tuples (list[tuple]): A combination of [('subject #', 'session #')] tuples to skip, example: [('01', '03')] will skip sub-01/ses-03. Used for missinng data, the pipeline will automatically remove inconsistent sessions from BIDS Layout.
+        - debug (bool): Default = False; if True, saves node outputs and log files.
     """
 
     def __init__(
@@ -43,6 +44,7 @@ class pipeline:
         self.mrtrix_nthreads = mrtrix_nthreads
         self.ext = ext
         self.excludes = skip_tuples
+        self.debug_mode = debug
         self.MNI_template = os.path.expandvars(
             "$FSLDIR/data/standard/MNI152_T1_1mm.nii.gz"
         )
@@ -805,7 +807,7 @@ class pipeline:
                     ),
                 ]
             )
-        if not debug:
+        if not self.debug_mode:
             self.workflow.config["execution"] = {
                 "use_relative_paths": "True",
                 "hash_method": "content",
