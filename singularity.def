@@ -117,7 +117,7 @@ bash -c "source activate base
       "pybids" \
       "fastcore" \
       "nilearn" \
-      "pipetography==0.3.11""
+      "pipetography==0.3.12""
 rm -rf ~/.cache/pip/*
 sync
 
