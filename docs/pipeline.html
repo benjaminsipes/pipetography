@@ -31,9 +31,13 @@ nb_path: "01_pipeline.ipynb"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>211112-11:27:00,763 nipype.utils WARNING:
-	 A newer version (1.7.0) of nipy/nipype is available. You are using 1.5.1
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
+  warnings.warn(&#34;Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.&#34;,
+/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/nilearn/datasets/__init__.py:93: FutureWarning: Fetchers from the nilearn.datasets module will be updated in version 0.9 to return python strings instead of bytes and Pandas dataframes instead of Numpy arrays.
+  warn(&#34;Fetchers from the nilearn.datasets module will be &#34;
+/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
+  warnings.warn(&#34;Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.&#34;,
 </pre>
 </div>
 </div>
@@ -46,7 +50,7 @@ nb_path: "01_pipeline.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Preprocessing-pipeline-module:">Preprocessing <a href="/pipetography/pipeline.html"><code>pipeline</code></a> module:<a class="anchor-link" href="#Preprocessing-pipeline-module:"> </a></h2><p>A class containing <a href="/pipetography/core.html"><code>core</code></a> functionalities wrapped in a <code>Nipype</code> workflow, assuming your input data is in valid BIDS format. This pipeline will follow the <a href="http://www.sciencedirect.com/science/article/pii/S1053811918306827">DESIGNER</a> protocol and align your T1 &amp; DWI to MNI template space (ACPC HCP procedure), perform all denoising &amp; artifact removal steps, and correct the DWI gradients accordingly.</p>
+<h2 id="Preprocessing-pipeline-module:">Preprocessing <a href="/pipetography/pipeline.html#pipeline"><code>pipeline</code></a> module:<a class="anchor-link" href="#Preprocessing-pipeline-module:"> </a></h2><p>A class containing <code>core</code> functionalities wrapped in a <code>Nipype</code> workflow, assuming your input data is in valid BIDS format. This pipeline will follow the <a href="http://www.sciencedirect.com/science/article/pii/S1053811918306827">DESIGNER</a> protocol and align your T1 &amp; DWI to MNI template space (ACPC HCP procedure), perform all denoising &amp; artifact removal steps, and correct the DWI gradients accordingly.</p>
 
 </div>
 </div>
@@ -62,7 +66,7 @@ nb_path: "01_pipeline.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="pipeline" class="doc_header"><code>class</code> <code>pipeline</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/pipeline.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>pipeline</code>(<strong><code>BIDS_dir</code></strong>, <strong><code>ext</code></strong>=<em><code>'nii.gz'</code></em>, <strong><code>rpe_design</code></strong>=<em><code>'-rpe_none'</code></em>, <strong><code>regrid</code></strong>=<em><code>True</code></em>, <strong><code>mrtrix_nthreads</code></strong>=<em><code>0</code></em>, <strong><code>skip_tuples</code></strong>=<em><code>[()]</code></em>)</p>
+<h2 id="pipeline" class="doc_header"><code>class</code> <code>pipeline</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/pipeline.py#L18" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>pipeline</code>(<strong><code>BIDS_dir</code></strong>, <strong><code>ext</code></strong>=<em><code>'nii.gz'</code></em>, <strong><code>rpe_design</code></strong>=<em><code>'-rpe_none'</code></em>, <strong><code>regrid</code></strong>=<em><code>True</code></em>, <strong><code>mrtrix_nthreads</code></strong>=<em><code>0</code></em>, <strong><code>skip_tuples</code></strong>=<em><code>[()]</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>)</p>
 </blockquote>
 <p>Create a <code>Nipype</code> workflow, collects the layout of a BIDS directory, and branches the workflow into sub-graphs that can be ran in parallel per subject-session combination
 Inputs:</p>
@@ -99,7 +103,7 @@ Inputs:</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <a href="/pipetography/pipeline.html"><code>pipeline</code></a>:</p>
+<p>Create a <a href="/pipetography/pipeline.html#pipeline"><code>pipeline</code></a>:</p>
 
 </div>
 </div>
@@ -185,7 +189,7 @@ Matlab Compiler Runtime 2012 version in Freesurfer Path found. (MCRv80)
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Take a look at what's in the <a href="/pipetography/pipeline.html"><code>pipeline</code></a>:</p>
+<p>Take a look at what's in the <a href="/pipetography/pipeline.html#pipeline"><code>pipeline</code></a>:</p>
 
 </div>
 </div>
