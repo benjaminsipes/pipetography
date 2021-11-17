@@ -26,6 +26,23 @@ nb_path: "02_nodes.ipynb"
     
 <div class="cell border-box-sizing code_cell rendered">
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
+  warnings.warn(&#34;Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.&#34;,
+/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/nilearn/datasets/__init__.py:93: FutureWarning: Fetchers from the nilearn.datasets module will be updated in version 0.9 to return python strings instead of bytes and Pandas dataframes instead of Numpy arrays.
+  warn(&#34;Fetchers from the nilearn.datasets module will be &#34;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -42,13 +59,13 @@ nb_path: "02_nodes.ipynb"
 <div class="output_markdown rendered_html output_subarea ">
 <h2 id="PreProcNodes" class="doc_header"><code>class</code> <code>PreProcNodes</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/nodes.py#L35" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PreProcNodes</code>(<strong><code>bids_dir</code></strong>, <strong><code>bids_path_template</code></strong>, <strong><code>bids_ext</code></strong>, <strong><code>rpe_design</code></strong>, <strong><code>mrtrix_nthreads</code></strong>, <strong><code>img_resol</code></strong>, <strong><code>sub_list</code></strong>, <strong><code>ses_list</code></strong>, <strong><code>exclude_list</code></strong>=<em><code>[()]</code></em>)</p>
 </blockquote>
-<p>Initiate DWI preprocessing pipeline nodes.</p>
+<p>Initiate DWI preprocessing pipeline nodes. This doesn't connect the nodes into a pipeline.</p>
 <p>Inputs:</p>
 
 <pre><code>- bids_dir (str) -
 - bids_path_template (dict) - template for file naming conventions
 - bids_ext (str) -
-- rpe_design (str)
+- rpe_design (str) - This is necessary to initiate nodes for single DWI volume, or additional nodes for reverse volume.
 - mrtrix_nthreads (int)
 - img_resol (str)
 - sub_list (List)
@@ -83,7 +100,7 @@ nb_path: "02_nodes.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ACPCNodes" class="doc_header"><code>class</code> <code>ACPCNodes</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/nodes.py#L362" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ACPCNodes</code>(<strong><code>MNI_template</code></strong>)</p>
+<h2 id="ACPCNodes" class="doc_header"><code>class</code> <code>ACPCNodes</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/nodes.py#L396" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ACPCNodes</code>(<strong><code>MNI_template</code></strong>)</p>
 </blockquote>
 <p>T1 anatomy image related nodes. Mainly ACPC alignment of T1 and DWI and extraction of white matter mask.
 Inputs:</p>
@@ -125,7 +142,7 @@ Inputs:</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="PostProcNodes" class="doc_header"><code>class</code> <code>PostProcNodes</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/nodes.py#L454" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PostProcNodes</code>(<strong><code>BIDS_dir</code></strong>, <strong><code>subj_template</code></strong>, <strong><code>sub_list</code></strong>, <strong><code>ses_list</code></strong>, <strong><code>skip_tuples</code></strong>)</p>
+<h2 id="PostProcNodes" class="doc_header"><code>class</code> <code>PostProcNodes</code><a href="https://github.com/axiezai/pipetography/tree/master/pipetography/nodes.py#L495" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PostProcNodes</code>(<strong><code>BIDS_dir</code></strong>, <strong><code>subj_template</code></strong>, <strong><code>sub_list</code></strong>, <strong><code>ses_list</code></strong>, <strong><code>skip_tuples</code></strong>)</p>
 </blockquote>
 <p>Inputs:
     BIDS_dir (str): Path to BIDS directory

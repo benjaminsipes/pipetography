@@ -21,9 +21,10 @@ class connectome:
     Inputs:
          - BIDS_dir (str): base BIDS directory path
          - atlas_list (List of strings): names of atlases: aal, brainnectome, desikan-killiany, default is set to brainnectome for now.
+         - debug (bool): Default = False; if True, saves node outputs and log files.
     """
 
-    def __init__(self, BIDS_dir, atlas_list, skip_tuples=[()]):
+    def __init__(self, BIDS_dir, atlas_list, skip_tuples=[()], debug=False):
         """
         Initialize workflow nodes
         """
@@ -31,6 +32,7 @@ class connectome:
         self.atlas_list = atlas_list
         self.sub_list, self.ses_list, self.layout = ppt.get_subs(BIDS_dir)
         self.skip_combos = skip_tuples
+        self.debug_mode = debug
         self.subject_template = {
             'tck': os.path.join(self.bids_dir, 'derivatives', 'streamlines','sub-{subject_id}', 'ses-{session_id}', 'sub-{subject_id}_ses-{session_id}_gmwmi2wm.tck'),
             'brain': os.path.join(self.bids_dir, 'derivatives', 'pipetography', 'sub-{subject_id}', 'ses-{session_id}', 'preprocessed', 'dwi_space-acpc_res-1mm_seg-brain.nii.gz'),
@@ -85,12 +87,19 @@ class connectome:
                 (self.PostProcNodes.connectome, self.PostProcNodes.datasink, [('out_file', 'connectomes.@connectome')]),
                 (self.PostProcNodes.distance, self.PostProcNodes.datasink, [('out_file', 'connectomes.@distance')])
             ])
-        self.workflow.config['execution'] = {
-                                            'use_relative_paths':'True',
-                                            'hash_method': 'content',
-                                            'stop_on_first_crash': 'True',
-                                            }
-
+        if not self.debug_mode:
+            self.workflow.config["execution"] = {
+                "use_relative_paths": "True",
+                "hash_method": "content",
+                "stop_on_first_crash": "True",
+            }
+        else:
+           self.workflow.config["execution"] = {
+                "use_relative_paths": "True",
+                "hash_method": "content",
+                "stop_on_first_crash": "True",
+                "remove_node_directories": "True",
+            }
     def draw_pipeline(self, graph_type='orig'):
         """
         Visualize workflow
