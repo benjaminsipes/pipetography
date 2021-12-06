@@ -76,7 +76,7 @@ class PreProcNodes:
             IdentityInterface(fields=["subject_id", "session_id"]),
             iterables=[("subject_id", sub_iter), ("session_id", ses_iter)],
             synchronize=True,
-            name="sub_source",
+            name="SubjectDataSource",
         )
         self.subject_source.inputs.ext = bids_ext
 
@@ -91,7 +91,7 @@ class PreProcNodes:
                     function=ppt.get_sub_gradfiles,
                     ext=bids_ext,
                 ),
-                name="sub_grad_files",
+                name="SubjectGradientSource",
             )
             self.sub_grad_files.inputs.ext = bids_ext
             # Reorient DWI to standard orientation for FSL:
@@ -109,7 +109,7 @@ class PreProcNodes:
                     export_grad="raw_dwi.b",
                     nthreads=mrtrix_nthreads,
                 ),
-                name="mrtrix_image",
+                name="Convert2Mif",
             )
         # If there are two DWI images with second volume being reverse direction:
         elif rpe_design == "-rpe_all":
@@ -121,7 +121,7 @@ class PreProcNodes:
                     function=ppt.get_sub_gradfiles,
                     ext=bids_ext,
                 ),
-                name="sub_grad_files1",
+                name="SubjectGradientForward",
             )
             # Reverse direction gradient file
             self.sub_grad_files2 = Node(
@@ -131,7 +131,7 @@ class PreProcNodes:
                     function=ppt.get_sub_gradfiles,
                     ext=bids_ext,
                 ),
-                name="sub_grad_files2",
+                name="SubjectGradientReverse",
             )
             self.sub_grad_files1.inputs.ext = bids_ext
             self.sub_grad_files2.inputs.ext = bids_ext
@@ -157,7 +157,7 @@ class PreProcNodes:
                     export_grad="raw_dwi1.b",
                     nthreads=mrtrix_nthreads,
                 ),
-                name="mrtrix_image1",
+                name="Convert2MifForward",
             )
             self.mrconvert2 = Node(
                 ppt.Convert(
@@ -165,7 +165,7 @@ class PreProcNodes:
                     export_grad="raw_dwi2.b",
                     nthreads=mrtrix_nthreads,
                 ),
-                name="mrtrix_image2",
+                name="Convert2MifReverse",
             )
             # concatenate the two images and their gradient files.
             self.mrconcat = Node(ppt.MRCat(out_file="raw_dwi.mif"), name="concat_dwi",)
@@ -173,7 +173,7 @@ class PreProcNodes:
 
         self.select_files = Node(
             SelectFiles(bids_path_template, base_directory=bids_dir),
-            name="select_files",
+            name="SelectFiles",
         )
 
         self.get_metadata = Node(
@@ -182,35 +182,35 @@ class PreProcNodes:
                 output_names=["ReadoutTime", "PE_DIR"],
                 function=ppt.BIDS_metadata,
             ),
-            name="get_metadata",
+            name="GetMetaData",
         )
         self.get_metadata.inputs.bids_dir = bids_dir
 
         self.createMask = Node(
             BrainMask(out_file="b0_brain_mask.mif", nthreads=mrtrix_nthreads),
-            name="raw_dwi2mask",
+            name="Dwi2Mask",
         )
 
         self.GradCheck = Node(
             ppt.GradCheck(export_grad="corrected.b", nthreads=mrtrix_nthreads),
-            name="dwigradcheck",
+            name="GradientCheck",
         )
 
         self.NewGradMR = Node(
             ppt.Convert(out_file="corrected_dwi.mif", nthreads=mrtrix_nthreads),
-            name="mrconvert",
+            name="ConvertDWI2Mif",
         )
 
         self.denoise = Node(
             ppt.dwidenoise(
                 out_file="denoised.mif", noise="noise_map.mif", nthreads=mrtrix_nthreads
             ),
-            name="denoise",
+            name="Denoise",
         )
 
         self.degibbs = Node(
             MRDeGibbs(out_file="unring.mif", nthreads=mrtrix_nthreads),
-            name="ringing_removal",
+            name="RingingRemoval",
         )
 
         self.fslpreproc = Node(
@@ -221,20 +221,20 @@ class PreProcNodes:
                 nthreads=mrtrix_nthreads,
                 export_grad="eddy_dwi.b",
             ),
-            name="dwifslpreproc",
+            name="DWIFSLPreproc",
         )
 
         self.GradUpdate = Node(
-            ppt.GradCheck(export_grad="tmp.b"), name="alter_gradient"
+            ppt.GradCheck(export_grad="tmp.b"), name="AlteredGradient"
         )
 
         self.ModGrad = Node(
-            ppt.MRInfo(export_grad="modified.b"), name="modify_gradient"
+            ppt.MRInfo(export_grad="modified.b"), name="ModifyGradient"
         )
 
-        self.UpdateMif = Node(ppt.Convert(), name="update_image")
+        self.UpdateMif = Node(ppt.Convert(), name="UpdateMif")
 
-        self.NewMask = Node(BrainMask(), name="recreate_mask")
+        self.NewMask = Node(BrainMask(), name="RecreateMask")
 
         self.biascorrect = Node(
             ppt.BiasCorrect(
@@ -243,7 +243,7 @@ class PreProcNodes:
                 bias="biasfield.mif",
                 nthreads=mrtrix_nthreads,
             ),
-            name="dwibiascorrect",
+            name="BiasCorrection",
         )
 
         self.grad_info = Node(
@@ -288,11 +288,11 @@ class PreProcNodes:
                 out_file="dwi_norm_intensity.mif",
                 nthreads=mrtrix_nthreads,
             ),
-            name="dwinormalise",
+            name="DWINormalise",
         )
         self.sub_b0extract = Node(
             DWIExtract(bzero=True, out_file="b0_volume.mif", nthreads=mrtrix_nthreads),
-            name="sub_b0extract",
+            name="ExtractB0Image",
         )
         self.sub_b0mean = Node(
             MRMath(
@@ -301,20 +301,20 @@ class PreProcNodes:
                 out_file="b0_dwi.mif",
                 nthreads=mrtrix_nthreads,
             ),
-            name="sub_mrmath_mean",
+            name="MeanB0Volume",
         )
         self.sub_b0mask = Node(
             BrainMask(out_file="dwi_norm_mask.mif", nthreads=mrtrix_nthreads),
-            name="sub_dwi2mask",
+            name="DWI2Mask",
         )
         self.sub_convert_dwi = Node(
-            ppt.Convert(out_file="b0_dwi.nii.gz"), name="sub_dwi2nii",
+            ppt.Convert(out_file="b0_dwi.nii.gz"), name="DWI2Nifti",
         )
         self.sub_convert_mask = Node(
-            ppt.Convert(out_file="dwi_norm_mask.nii.gz"), name="sub_mask2nii",
+            ppt.Convert(out_file="dwi_norm_mask.nii.gz"), name="Mask2Nifti",
         )
         self.sub_apply_mask = Node(
-            fsl.ApplyMask(out_file="b0_dwi_brain.nii.gz"), name="sub_ApplyMask",
+            fsl.ApplyMask(out_file="b0_dwi_brain.nii.gz"), name="ApplyMask",
         )
         self.mni_b0extract = Node(
             DWIExtract(
@@ -322,7 +322,7 @@ class PreProcNodes:
                 out_file="dwi_space-acpc_res-{}_b0.mif".format(img_resol),
                 nthreads=mrtrix_nthreads,
             ),
-            name="mni_b0extract",
+            name="MNIExtractB0Volume",
         )
         self.mni_b0mean = Node(
             MRMath(
@@ -331,32 +331,32 @@ class PreProcNodes:
                 out_file="dwi_space-acpc_res-{}_b0mean.mif".format(img_resol),
                 nthreads=mrtrix_nthreads,
             ),
-            name="mni_mrmath_mean",
+            name="MNIB0MeanVolume",
         )
         self.mni_b0mask = Node(
             BrainMask(
                 out_file="dwi_space-acpc_res-{}_mask.mif".format(img_resol),
                 nthreads=mrtrix_nthreads,
             ),
-            name="mni_dwi2mask",
+            name="MNIB0BrainMask",
         )
         self.mni_convert_dwi = Node(
             ppt.Convert(
                 out_file="dwi_space-acpc_res-{}_b0mean.nii.gz".format(img_resol)
             ),
-            name="mni_dwi2nii",
+            name="MNIDWI2Nifti",
         )
         self.mni_convert_mask = Node(
             ppt.Convert(
                 out_file="dwi_space-acpc_res-{}_seg-brain_mask.nii.gz".format(img_resol)
             ),
-            name="mni_mask2nii",
+            name="MNIMask2Nifti",
         )
         self.mni_apply_mask = Node(
             fsl.ApplyMask(
                 out_file="dwi_space-acpc_res-{}_seg-brain.nii.gz".format(img_resol)
             ),
-            name="mni_ApplyMask",
+            name="MNIApplyMask",
         )
         self.mni_dwi = Node(
             ppt.Convert(
@@ -377,7 +377,7 @@ class PreProcNodes:
             DataSink(
                 base_directory=os.path.join(bids_dir, "derivatives", "pipetography")
             ),
-            name="datasink",
+            name="DataSink",
         )
         substitutions = [
             ("_subject_id_", "sub-"),
@@ -412,11 +412,11 @@ class ACPCNodes:
             fsl.utils.RobustFOV(
                 out_transform="roi2full.mat", out_roi="robustfov.nii.gz"
             ),
-            name="reduce_FOV",
+            name="ReduceFOV",
         )
         self.xfminverse = Node(
             fsl.utils.ConvertXFM(out_file="full2roi.mat", invert_xfm=True),
-            name="transform_inverse",
+            name="InverseTransformation",
         )
         self.flirt = Node(
             fsl.preprocess.FLIRT(
@@ -429,7 +429,7 @@ class ACPCNodes:
         )
         self.concatxfm = Node(
             fsl.utils.ConvertXFM(concat_xfm=True, out_file="full2std.mat"),
-            name="concat_transform",
+            name="ConcatTransform",
         )
 
         self.alignxfm = Node(
@@ -444,23 +444,23 @@ class ACPCNodes:
                 interp="spline",
                 ref_file=MNI_template,
             ),
-            name="apply_warp",
+            name="ACPCApplyWarp",
         )
 
         self.t1_bet = Node(
             fsl.preprocess.BET(mask=True, robust=True, out_file="acpc_t1_brain.nii.gz"),
-            name="fsl_bet",
+            name="FSLBet",
         )
 
         self.epi_reg = Node(fsl.epi.EpiReg(out_base="dwi2acpc"), name="fsl_epireg",)
 
         self.acpc_xfm = Node(
             ppt.TransConvert(flirt=True, out_file="dwi2acpc_xfm.mat", force=True),
-            name="transformconvert",
+            name="ConvertTransformation",
         )
 
         self.apply_xfm = Node(
-            ppt.MRTransform(out_file="dwi_acpc.mif"), name="mrtransform",
+            ppt.MRTransform(out_file="dwi_acpc.mif"), name="MRTransform",
         )
 
         self.regrid = Node(
@@ -468,19 +468,19 @@ class ACPCNodes:
                 out_file="dwi_space-acpc_res-1mm.mif",
                 regrid=MNI_template,
             ),
-            name="mrgrid",
+            name="Regrid",
         )
 
         self.gen_5tt = Node(
             ppt.Make5ttFSL(premasked=True, out_file="T1w_space-acpc_seg-5tt.mif"),
-            name="mrtrix_5ttgen",
+            name="Mrtrix5TTGen",
         )
         self.gmwmi = Node(ppt.gmwmi(out_file="gmwmi.nii.gz"), name="5tt2gmwmi")
         self.binarize_gmwmi = Node(
             ppt.MRThreshold(
                 opt_abs=0.05, out_file="T1w_space-acpc_seg-gmwmi_mask.nii.gz"
             ),
-            name="binarize_gmwmi",
+            name="GMWMI",
         )
         self.convert2wm = Node(
             ppt.Convert(
@@ -488,7 +488,7 @@ class ACPCNodes:
                 axes=[0, 1, 2],
                 out_file="T1w_space-acpc_seg-wm_mask.nii.gz",
             ),
-            name="5tt2wm",
+            name="GetWMMask",
         )
 
 # Cell
