@@ -573,9 +573,6 @@ class PostProcNodes:
             ),
             name="nonlinear_registration",
         )
-        self.round_atlas = Node(
-            ppt.CheckNIZ(args="-round", out_file="nodes.mif"), name="round_parcellation"
-        )
         self.response = Node(
             ResponseSD(
                 algorithm="dhollander",

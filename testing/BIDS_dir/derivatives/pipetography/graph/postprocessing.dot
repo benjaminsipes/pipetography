@@ -8,7 +8,6 @@ strict digraph  {
 sift2_filtering;
 weight_connectome;
 weight_distance;
-round_parcellation;
 "datasink (io)";
 "subj_source (utility)" -> "select_subjects (io)";
 "select_subjects (io)" -> "linear_registration (ants)";
@@ -19,12 +18,11 @@ round_parcellation;
 "select_subjects (io)" -> weight_connectome;
 "select_subjects (io)" -> weight_distance;
 "linear_registration (ants)" -> "nonlinear_registration (ants)";
-"nonlinear_registration (ants)" -> round_parcellation;
+"nonlinear_registration (ants)" -> weight_connectome;
+"nonlinear_registration (ants)" -> weight_distance;
 "SDResponse (mrtrix3)" -> "dwiFOD (mrtrix3)";
 "dwiFOD (mrtrix3)" -> sift2_filtering;
 sift2_filtering -> weight_connectome;
 weight_connectome -> "datasink (io)";
 weight_distance -> "datasink (io)";
-round_parcellation -> weight_connectome;
-round_parcellation -> weight_distance;
 }
