@@ -32,11 +32,11 @@ nb_path: "01_pipeline.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
+<pre>/opt/miniconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
   warnings.warn(&#34;Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.&#34;,
-/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/nilearn/datasets/__init__.py:93: FutureWarning: Fetchers from the nilearn.datasets module will be updated in version 0.9 to return python strings instead of bytes and Pandas dataframes instead of Numpy arrays.
+/opt/miniconda3/envs/tracts/lib/python3.9/site-packages/nilearn/datasets/__init__.py:93: FutureWarning: Fetchers from the nilearn.datasets module will be updated in version 0.9 to return python strings instead of bytes and Pandas dataframes instead of Numpy arrays.
   warn(&#34;Fetchers from the nilearn.datasets module will be &#34;
-/Users/bsipes/opt/anaconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
+/opt/miniconda3/envs/tracts/lib/python3.9/site-packages/bids/config.py:39: FutureWarning: Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.
   warnings.warn(&#34;Setting &#39;extension_initial_dot&#39; will be removed in pybids 0.16.&#34;,
 </pre>
 </div>
@@ -76,7 +76,8 @@ Inputs:</p>
 - rpe_design (str): Reverse phase encoding design for your DWI acquisition. Also supports '-rpe_all', default is "-rpe_none"
 - regrid (bool): Whether  to resample DWI to  1mm MNI template, defaults to True.
 - mrtrix_nthreads (int): Number of threads for mrtrix3 algorithm. If zero, the number of available CPUs will be used. Default is 0.
-- skip_tuples (list[tuple]): A combination of [('subject #', 'session #')] tuples to skip, example: [('01', '03')] will skip sub-01/ses-03. Used for missinng data, the pipeline will automatically remove inconsistent sessions from BIDS Layout.</code></pre>
+- skip_tuples (list[tuple]): A combination of [('subject #', 'session #')] tuples to skip, example: [('01', '03')] will skip sub-01/ses-03. Used for missinng data, the pipeline will automatically remove inconsistent sessions from BIDS Layout.
+- debug (bool): Default = False; if True, saves node outputs and log files.</code></pre>
 
 </div>
 
