@@ -23,6 +23,7 @@ class pipeline:
         - ext (str): Extension of your BIDS image files. Default is set to "nii.gz"
         - rpe_design (str): Reverse phase encoding design for your DWI acquisition. Also supports '-rpe_all', default is "-rpe_none"
         - regrid (bool): Whether  to resample DWI to  1mm MNI template, defaults to True.
+        - gmwmi (bool): Segment for gray matter white matter interface (GMWMI) with FSL first, defaults to False.
         - mrtrix_nthreads (int): Number of threads for mrtrix3 algorithm. If zero, the number of available CPUs will be used. Default is 0.
         - skip_tuples (list[tuple]): A combination of [('subject #', 'session #')] tuples to skip, example: [('01', '03')] will skip sub-01/ses-03. Used for missinng data, the pipeline will automatically remove inconsistent sessions from BIDS Layout.
         - debug (bool): Default = False; if True, saves node outputs and log files.
@@ -34,6 +35,7 @@ class pipeline:
         ext="nii.gz",
         rpe_design="-rpe_none",
         regrid=True,
+        gmwmi = False,
         mrtrix_nthreads=0,
         skip_tuples=[()],
         debug=False
@@ -41,6 +43,7 @@ class pipeline:
         self.bids_dir = BIDS_dir
         self.rpe_design = rpe_design
         self.regrid = regrid
+        self.gmwmi = gmwmi
         self.mrtrix_nthreads = mrtrix_nthreads
         self.ext = ext
         self.excludes = skip_tuples
@@ -257,48 +260,7 @@ class pipeline:
                     self.PreProcNodes.datasink,
                     [("out_file", "preprocessed.@t1_acpc_aligned")],
                 ),
-                ## Adding WM mask extraction to replace original recon all section
-                ## WM Mask extraction section
-                (
-                    self.ACPCNodes.ACPC_warp,
-                    self.ACPCNodes.t1_bet,
-                    [("out_file", "in_file")],
-                ),
-                (
-                    self.ACPCNodes.t1_bet,
-                    self.ACPCNodes.gen_5tt,
-                    [("out_file", "in_file")],
-                ),
-                (
-                    self.ACPCNodes.gen_5tt,
-                    self.ACPCNodes.convert2wm,
-                    [("out_file", "in_file")],
-                ),
-                (
-                    self.ACPCNodes.gen_5tt,
-                    self.ACPCNodes.gmwmi,
-                    [("out_file", "in_file")],
-                ),
-                (
-                    self.ACPCNodes.gmwmi,
-                    self.ACPCNodes.binarize_gmwmi,
-                    [("out_file", "in_file")],
-                ),
-                (
-                    self.ACPCNodes.gen_5tt,
-                    self.PreProcNodes.datasink,
-                    [("out_file", "preprocessed.@mr5tt")],
-                ),
-                (
-                    self.ACPCNodes.binarize_gmwmi,
-                    self.PreProcNodes.datasink,
-                    [("out_file", "preprocessed.@gmwmi")],
-                ),
-                (
-                    self.ACPCNodes.convert2wm,
-                    self.PreProcNodes.datasink,
-                    [("out_file", "preprocessed.@wm")],
-                ),
+                ## MNI Alignment:
                 (
                     self.ACPCNodes.ACPC_warp,
                     self.ACPCNodes.epi_reg,
@@ -334,6 +296,7 @@ class pipeline:
                     self.ACPCNodes.apply_xfm,
                     [("out_file", "linear_xfm")],
                 ),
+                ## Denoising:
                 (
                     self.PreProcNodes.norm_intensity,
                     self.ACPCNodes.apply_xfm,
@@ -616,7 +579,53 @@ class pipeline:
                 ),
             ]
         )
-
+        ## Adding WM mask extraction to replace original recon all section
+        ## GMWMI & WM Mask extraction section
+        if self.gmwmi == True:
+            self.workflow.connect(
+                [
+                    (
+                        self.ACPCNodes.ACPC_warp,
+                        self.ACPCNodes.t1_bet,
+                        [("out_file", "in_file")],
+                    ),
+                    (
+                        self.ACPCNodes.t1_bet,
+                        self.ACPCNodes.gen_5tt,
+                        [("out_file", "in_file")],
+                    ),
+                    (
+                        self.ACPCNodes.gen_5tt,
+                        self.ACPCNodes.convert2wm,
+                        [("out_file", "in_file")],
+                    ),
+                    (
+                        self.ACPCNodes.gen_5tt,
+                        self.ACPCNodes.gmwmi,
+                        [("out_file", "in_file")],
+                    ),
+                    (
+                        self.ACPCNodes.gmwmi,
+                        self.ACPCNodes.binarize_gmwmi,
+                        [("out_file", "in_file")],
+                    ),
+                    (
+                        self.ACPCNodes.gen_5tt,
+                        self.PreProcNodes.datasink,
+                        [("out_file", "preprocessed.@mr5tt")],
+                    ),
+                    (
+                        self.ACPCNodes.binarize_gmwmi,
+                        self.PreProcNodes.datasink,
+                        [("out_file", "preprocessed.@gmwmi")],
+                    ),
+                    (
+                        self.ACPCNodes.convert2wm,
+                        self.PreProcNodes.datasink,
+                        [("out_file", "preprocessed.@wm")],
+                    ),
+                ]
+            )
         if rpe_design == "-rpe_none":
             self.workflow.connect(
                 [
