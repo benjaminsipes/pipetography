@@ -296,6 +296,12 @@ class pipeline:
                     self.ACPCNodes.apply_xfm,
                     [("out_file", "linear_xfm")],
                 ),
+                # Connect FSL BET
+                (
+                    self.ACPCNodes.ACPC_warp,
+                    self.ACPCNodes.t1_bet,
+                    [("out_file", "in_file")],
+                ),
                 ## Denoising:
                 (
                     self.PreProcNodes.norm_intensity,
@@ -581,14 +587,9 @@ class pipeline:
         )
         ## Adding WM mask extraction to replace original recon all section
         ## GMWMI & WM Mask extraction section
-        if self.gmwmi == True:
+        if self.gmwmi:
             self.workflow.connect(
                 [
-                    (
-                        self.ACPCNodes.ACPC_warp,
-                        self.ACPCNodes.t1_bet,
-                        [("out_file", "in_file")],
-                    ),
                     (
                         self.ACPCNodes.t1_bet,
                         self.ACPCNodes.gen_5tt,
@@ -626,6 +627,7 @@ class pipeline:
                     ),
                 ]
             )
+        ## Phase encoding design conditions:
         if rpe_design == "-rpe_none":
             self.workflow.connect(
                 [
