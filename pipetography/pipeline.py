@@ -220,10 +220,15 @@ class pipeline:
                     self.ACPCNodes.reduceFOV,
                     [("out_file", "in_file")],
                 ),
+                # (
+                #     self.PreProcNodes.select_files,
+                #     self.ACPCNodes.ACPC_warp,
+                #     [("anat", "in_file")],
+                # ),
                 (
-                    self.PreProcNodes.select_files,
+                    self.ACPCNodes.T1Reorient,
                     self.ACPCNodes.ACPC_warp,
-                    [("anat", "in_file")],
+                    [("out_file", "in_file")],
                 ),
                 (
                     self.ACPCNodes.reduceFOV,

@@ -21,16 +21,18 @@ class connectome:
     Inputs:
          - BIDS_dir (str): base BIDS directory path
          - atlas_list (List of strings): names of atlases: aal, brainnectome, desikan-killiany, default is set to brainnectome for now.
+         - SIFT_mask (bool): Uses 5ttgen tissue segmentation during SIFT2. Defaults to False. If in pipeline `gmwmi = False`, this should also be false.
          - debug (bool): Default = False; if True, saves node outputs and log files.
     """
 
-    def __init__(self, BIDS_dir, atlas_list, skip_tuples=[()], debug=False):
+    def __init__(self, BIDS_dir, atlas_list, SIFT_mask=False, skip_tuples=[()], debug=False):
         """
         Initialize workflow nodes
         """
         self.bids_dir = BIDS_dir
         self.atlas_list = atlas_list
         self.sub_list, self.ses_list, self.layout = ppt.get_subs(BIDS_dir)
+        self.SIFT_mask = SIFT_mask
         self.skip_combos = skip_tuples
         self.debug_mode = debug
         self.subject_template = {
@@ -39,9 +41,10 @@ class connectome:
             'dwi_mif': os.path.join(self.bids_dir, 'derivatives', 'pipetography', 'sub-{subject_id}', 'ses-{session_id}', 'preprocessed', 'dwi_space-acpc_res-1mm.mif'),
             'T1A': os.path.join(self.bids_dir, 'derivatives', 'pipetography', 'sub-{subject_id}', 'ses-{session_id}', 'preprocessed', 'T1w_space-acpc.nii.gz'),
             'mask': os.path.join(self.bids_dir, 'derivatives', 'pipetography', 'sub-{subject_id}', 'ses-{session_id}', 'preprocessed', 'dwi_space-acpc_res-1mm_seg-brain_mask.nii.gz'),
-            'mrtrix5tt': os.path.join(self.bids_dir, 'derivatives', 'pipetography', 'sub-{subject_id}', 'ses-{session_id}', 'preprocessed', 'T1w_space-acpc_seg-5tt.mif')
         }
 
+        if self.SIFT_mask:
+            self.subject_template['mrtrix5tt'] = os.path.join(self.bids_dir, 'derivatives', 'pipetography', 'sub-{subject_id}', 'ses-{session_id}', 'preprocessed', 'T1w_space-acpc_seg-5tt.mif')
 
     def create_nodes(self):
         """
@@ -77,7 +80,6 @@ class connectome:
                 (self.PostProcNodes.response, self.PostProcNodes.fod, [('wm_file', 'wm_txt')]),
                 (self.PostProcNodes.response, self.PostProcNodes.fod, [('gm_file', 'gm_txt')]),
                 (self.PostProcNodes.response, self.PostProcNodes.fod, [('csf_file', 'csf_txt')]),
-                (self.PostProcNodes.select_files, self.PostProcNodes.sift2, [('mrtrix5tt', 'act')]),
                 (self.PostProcNodes.select_files, self.PostProcNodes.sift2, [('tck', 'in_file')]),
                 (self.PostProcNodes.fod, self.PostProcNodes.sift2, [('wm_odf', 'in_fod')]),
                 (self.PostProcNodes.sift2, self.PostProcNodes.connectome, [('out_file', 'in_weights')]),
@@ -86,6 +88,11 @@ class connectome:
                 (self.PostProcNodes.connectome, self.PostProcNodes.datasink, [('out_file', 'connectomes.@connectome')]),
                 (self.PostProcNodes.distance, self.PostProcNodes.datasink, [('out_file', 'connectomes.@distance')])
             ])
+        if self.SIFT_mask:
+            self.workflow.connect(
+                (self.PostProcNodes.select_files, self.PostProcNodes.sift2, [('mrtrix5tt', 'act')])
+            )
+
         if not self.debug_mode:
             self.workflow.config["execution"] = {
                 "use_relative_paths": "True",
