@@ -823,7 +823,7 @@ class pipeline:
                     ),
                 ]
             )
-        if not self.debug_mode:
+        if self.debug_mode:
             self.workflow.config["execution"] = {
                 "use_relative_paths": "True",
                 "hash_method": "content",

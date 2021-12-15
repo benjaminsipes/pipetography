@@ -95,7 +95,7 @@ class connectome:
             ])
             self.PostProcNodes.sift2.inputs.fd_scale_gm=True
 
-        if not self.debug_mode:
+        if self.debug_mode:
             self.workflow.config["execution"] = {
                 "use_relative_paths": "True",
                 "hash_method": "content",
