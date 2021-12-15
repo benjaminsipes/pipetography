@@ -90,8 +90,9 @@ class connectome:
             ])
         if self.SIFT_mask:
             self.workflow.connect(
+            [
                 (self.PostProcNodes.select_files, self.PostProcNodes.sift2, [('mrtrix5tt', 'act')])
-            )
+            ])
 
         if not self.debug_mode:
             self.workflow.config["execution"] = {
