@@ -93,6 +93,7 @@ class connectome:
             [
                 (self.PostProcNodes.select_files, self.PostProcNodes.sift2, [('mrtrix5tt', 'act')])
             ])
+            self.PostProcNodes.sift2.inputs.fd_scale_gm=True
 
         if not self.debug_mode:
             self.workflow.config["execution"] = {

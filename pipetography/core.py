@@ -1036,16 +1036,17 @@ class tckSIFT2InputSpec(CommandLineInputSpec):
     proc_mask = File(
         exists=True,
         argstr="-proc_mask %s",
-        desc="provide an image containing the processing mask weights for the model; image spatial dimensions must match the fixel image"
+        desc="provide an image containing the processing mask weights for the model; image spatial dimensions must match the fixel image",
     )
     act = File(
         exists=True,
         argstr="-act %s",
-        desc="use an ACT five-tissue-type segmented anatomical image to derive the processing mask"
+        desc="use an ACT five-tissue-type segmented anatomical image to derive the processing mask",
     )
     fd_scale_gm = traits.Bool(
         argstr="-fd_scale_gm",
-        desc="in conjunction with -act to heuristically downsize the fibre density estimates based on the presence of GM in the voxel. This can assist in reducing tissue interface effects when using a single-tissue deconvolution algorithm"
+        desc="in conjunction with -act to heuristically downsize the fibre density estimates based on the presence of GM in the voxel. This can assist in reducing tissue interface effects when using a single-tissue deconvolution algorithm",
+        requires=["act"]
     )
     nthreads = traits.Int(
         argstr="-nthreads %d",

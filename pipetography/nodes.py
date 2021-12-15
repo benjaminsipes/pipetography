@@ -515,9 +515,10 @@ class PostProcNodes:
             for session in ses_list
             for subject in sub_list
         ]
+        # BIDS derivatives directory containing preprocessed outputs and streamline outputs
         preproc_dir = os.path.join(
             BIDS_dir, "derivatives", "pipetography"
-        )  # BIDS derivatives directory containing preprocessed outputs and streamline outputs
+        )
 
         # DWI input:
         self.subject_source = Node(
@@ -549,7 +550,7 @@ class PostProcNodes:
                 output_warped_image="atlas_in_dwi_affine.nii.gz",
                 interpolation="genericLabel",
             ),
-            name="linear_registration",
+            name="LinearRegistration",
         )
         self.nonlinear_reg = Node(
             ants.Registration(
@@ -571,7 +572,7 @@ class PostProcNodes:
                 output_warped_image="atlas_in_dwi_syn.nii.gz",
                 interpolation="genericLabel",
             ),
-            name="nonlinear_registration",
+            name="NonLinearRegistration",
         )
         self.response = Node(
             ResponseSD(
@@ -594,13 +595,16 @@ class PostProcNodes:
             name="dwiFOD",
         )
         self.sift2 = Node(
-            ppt.tckSIFT2(fd_scale_gm=True, out_file="sift2.txt"), name="sift2_filtering"
+            ppt.tckSIFT2(
+                out_file="sift2.txt"
+            ),
+            name="SIFT2",
         )
         self.connectome = Node(
             ppt.MakeConnectome(
                 out_file="connectome.csv", symmetric=True, zero_diag=True
             ),
-            name="weight_connectome",
+            name="WeightConnectome",
         )
         self.distance = Node(
             ppt.MakeConnectome(
@@ -610,7 +614,7 @@ class PostProcNodes:
                 zero_diag=True,
                 out_file="distances.csv",
             ),
-            name="weight_distance",
+            name="WeightDistance",
         )
         self.datasink = Node(DataSink(base_directory=preproc_dir), name="datasink")
         substitutions = [("_subject_id_", "sub-"), ("_session_id_", "ses-")]
