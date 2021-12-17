@@ -548,7 +548,7 @@ class PostProcNodes:
                 shrink_factors=[[8, 4, 2, 1]],
                 use_histogram_matching=[True],
                 output_warped_image="atlas_in_dwi_affine.nii.gz",
-                interpolation="genericLabel",
+                interpolation="GenericLabel",
             ),
             name="LinearRegistration",
         )
@@ -570,7 +570,7 @@ class PostProcNodes:
                 shrink_factors=[[8, 4, 2, 1]],
                 use_histogram_matching=[True],
                 output_warped_image="atlas_in_dwi_syn.nii.gz",
-                interpolation="genericLabel",
+                interpolation="GenericLabel",
             ),
             name="NonLinearRegistration",
         )
