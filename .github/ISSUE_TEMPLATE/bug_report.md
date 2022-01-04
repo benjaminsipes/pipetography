@@ -11,11 +11,7 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+Steps to reproduce the behavior, display the workflow's python code, or the folder structure with `tree` if the problem is with your dataset.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
