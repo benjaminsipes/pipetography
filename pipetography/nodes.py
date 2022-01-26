@@ -600,6 +600,14 @@ class PostProcNodes:
             ),
             name="SIFT2",
         )
+        self.fit_tensor = Node(FitTensor(out_file="dti.mif"), name="dwi2tensor",)
+        self.tensor_FA = Node(TensorMetrics(out_fa="fa.mif"), name="tensor2metrics",)
+        self.tcksample = Node(
+            ppt.TckSample(
+                out_file="mean_FA_per_streamline.csv", stat_tck="mean",
+            ),
+            name="TckSample",
+        )
         self.connectome = Node(
             ppt.MakeConnectome(
                 out_file="connectome.csv", symmetric=True, zero_diag=True
@@ -615,6 +623,15 @@ class PostProcNodes:
                 out_file="distances.csv",
             ),
             name="WeightDistance",
+        )
+        self.FA_weighted = Node(
+            ppt.MakeConnectome(
+                stat_edge="mean",
+                symmetric=True,
+                zero_diag=True,
+                out_file="FA_weighted.csv",
+            ),
+            name="WeightFA",
         )
         self.datasink = Node(DataSink(base_directory=preproc_dir), name="datasink")
         substitutions = [("_subject_id_", "sub-"), ("_session_id_", "ses-")]

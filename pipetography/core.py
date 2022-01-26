@@ -1116,6 +1116,11 @@ class MakeConnectomeInputSpec(CommandLineInputSpec):
         argstr="-stat_edge %s",
         desc="statistic for combining the values from all streamlines in an edge into a single scale value for that edge (options are: sum,mean,min,max;default=sum)"
     )
+    scale_file = File(
+        exists=True,
+        argstr="-scale_file %s",
+        desc="input CSV of all weights (e.g. FA) according to each streamline",
+    )
     symmetric=traits.Bool(
         argstr='-symmetric',
         desc='make matrices symmetric'
@@ -1139,6 +1144,40 @@ class MakeConnectome(CommandLine):
     _cmd="tck2connectome"
     input_spec = MakeConnectomeInputSpec
     output_spec = MakeConnectomeOutputSpec
+
+    def _list_outputs(self):
+        outputs=self.output_spec().get()
+        outputs["out_file"] = os.path.abspath(self.inputs.out_file)
+        return outputs
+
+# Internal Cell
+class TckSampleInputSpec(CommandLineInputSpec):
+    in_file = File(
+        exists=True, mandatory=True, argstr="%s", position=-3, desc="input tck file"
+    )
+    in_metric = File(
+        exists=True, mandatory=True, argstr="%s", position=-2, desc="input metric file (e.g. FA.mif)"
+    )
+    out_file = File(
+        exists=True, mandatory=True, argstr="%s", position=-1, desc="output values csv file"
+    )
+    stat_tck = traits.Enum(
+        "sum",
+        "mean",
+        "min",
+        "max",
+        argstr="-stat_edge %s",
+        desc="statistic for combining the sample values from within"
+    )
+class TckSampleOutputSpec(TraitedSpec):
+    out_file = File(argstr="%s", desc="output mean_FA_per_streamline csv file")
+class TckSample(CommandLine):
+    """
+    mrtrix3's tcksample function for generating mean_FA_per_streamline.csv.
+    """
+    _cmd="tcksample"
+    input_spec=TckSampleInputSpec
+    output_spec=TckSampleOutputSpec
 
     def _list_outputs(self):
         outputs=self.output_spec().get()
