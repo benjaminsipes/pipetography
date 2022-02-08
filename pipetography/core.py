@@ -1169,8 +1169,10 @@ class TckSampleInputSpec(CommandLineInputSpec):
         argstr="-stat_edge %s",
         desc="statistic for combining the sample values from within"
     )
+
 class TckSampleOutputSpec(TraitedSpec):
     out_file = File(argstr="%s", desc="output mean_FA_per_streamline csv file")
+
 class TckSample(CommandLine):
     """
     mrtrix3's tcksample function for generating mean_FA_per_streamline.csv.

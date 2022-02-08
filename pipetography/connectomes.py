@@ -21,12 +21,12 @@ class connectome:
     Inputs:
          - BIDS_dir (str): base BIDS directory path
          - atlas_list (List of strings): names of atlases: aal, brainnectome, desikan-killiany, default is set to brainnectome for now.
-         - FA (bool): Default = False; if True, additionally creates an FA weighted connectome.
+         - FA (bool): Default = True; if True, additionally creates an FA weighted connectome.
          - SIFT_mask (bool): Uses 5ttgen tissue segmentation during SIFT2. Defaults to False. If in pipeline `gmwmi = False`, this should also be false.
          - debug (bool): Default = False; if True, saves node outputs and log files.
     """
 
-    def __init__(self, BIDS_dir, atlas_list, FA=False, SIFT_mask=False, skip_tuples=[()], debug=False):
+    def __init__(self, BIDS_dir, atlas_list, FA=True, SIFT_mask=False, skip_tuples=[()], debug=False):
         """
         Initialize workflow nodes
         """
@@ -100,12 +100,13 @@ class connectome:
         if self.FA:
             self.workflow.connect(
                 [
-                    (self.PostProcNodes.select_files, self.PostProcNodes.fit_tensor, [('brain','in_file')]),
+                    (self.PostProcNodes.select_files, self.PostProcNodes.fit_tensor, [('dwi_mif','in_file')]),
                     (self.PostProcNodes.fit_tensor, self.PostProcNodes.tensor_FA, [('out_file','in_file')]),
                     (self.PostProcNodes.tensor_FA, self.PostProcNodes.tcksample, [('out_fa','in_metric')]),
-                    (self.PostProcNodes.sift2, self.PostProcNodes.tcksample, [('out_file','in_file')]),
+                    (self.PostProcNodes.select_files, self.PostProcNodes.tcksample, [('tck','in_file')]),
                     (self.PostProcNodes.tcksample, self.PostProcNodes.FA_weighted, [('out_file','scale_file')]),
-                    (self.PostProcNodes.nonlinear_reg, self.PostProcNodes.FA_weighted, [('out_file','in_weights')]),
+                    (self.PostProcNodes.nonlinear_reg, self.PostProcNodes.FA_weighted, [('warped_image', 'in_parc')]),
+                    (self.PostProcNodes.sift2, self.PostProcNodes.FA_weighted, [('out_file', 'in_weights')]),
                     (self.PostProcNodes.FA_weighted, self.PostProcNodes.datasink,[('out_file','connectomes.@FA_weighted')])
                 ])
 
