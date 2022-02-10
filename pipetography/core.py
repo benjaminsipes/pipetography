@@ -1166,7 +1166,7 @@ class TckSampleInputSpec(CommandLineInputSpec):
         "mean",
         "min",
         "max",
-        argstr="-stat_edge %s",
+        argstr="-stat_tck %s",
         desc="statistic for combining the sample values from within"
     )
 
