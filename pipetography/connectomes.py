@@ -107,6 +107,7 @@ class connectome:
                     (self.PostProcNodes.tcksample, self.PostProcNodes.FA_weighted, [('out_file','scale_file')]),
                     (self.PostProcNodes.nonlinear_reg, self.PostProcNodes.FA_weighted, [('warped_image', 'in_parc')]),
                     (self.PostProcNodes.sift2, self.PostProcNodes.FA_weighted, [('out_file', 'in_weights')]),
+                    (self.PostProcNodes.select_files, self.PostProcNodes.FA_weighted, [('tck', 'in_file')]),
                     (self.PostProcNodes.FA_weighted, self.PostProcNodes.datasink,[('out_file','connectomes.@FA_weighted')])
                 ])
 
