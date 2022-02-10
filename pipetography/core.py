@@ -1159,7 +1159,7 @@ class TckSampleInputSpec(CommandLineInputSpec):
         exists=True, mandatory=True, argstr="%s", position=-2, desc="input metric file (e.g. FA.mif)"
     )
     out_file = File(
-        exists=True, mandatory=True, argstr="%s", position=-1, desc="output values csv file"
+        exists=False, mandatory=True, argstr="%s", position=-1, desc="output values csv file"
     )
     stat_tck = traits.Enum(
         "sum",
