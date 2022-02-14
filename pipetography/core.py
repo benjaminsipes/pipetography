@@ -1185,3 +1185,46 @@ class TckSample(CommandLine):
         outputs=self.output_spec().get()
         outputs["out_file"] = os.path.abspath(self.inputs.out_file)
         return outputs
+
+# Internal Cell
+class ReplaceNaNInputSpec(CommandLineInputSpec):
+    in_file = File(
+        exists=True, mandatory=True, argstr="%s", position=-6, desc="input FA.mif file"
+    )
+    replace_mif = File(
+        exists=True, mandatory=True, argstr="%s", position=-4, desc="same as input FA.mif file"
+    )
+    out_file = File(
+        exists=False, mandatory=True, argstr="%s", position=-1, desc="output FA_nonan.mif file"
+    )
+    replace_val = traits.Float(
+        argstr="%d",
+        position=-3,
+        desc="replacement value for NaNs e.g. 0"
+    )
+    if_operand = traits.Bool(
+        argstr='-if',
+        position=-2,
+        desc='conditional opperand for mrcalc operation'
+    )
+    finite_operand = traits.Bool(
+        argstr='-finite',
+        position=-5,
+        desc='conditional opperand evaluating for NaN in mrcalc operation'
+    )
+
+class ReplaceNaNOutputSpec(TraitedSpec):
+    out_file = File(argstr="%s", desc="FA.mif file without NaNs")
+
+class ReplaceNaN(CommandLine):
+    """
+    mrtrix3's tcksample function for generating mean_FA_per_streamline.csv.
+    """
+    _cmd="mrcalc"
+    input_spec=ReplaceNaNInputSpec
+    output_spec=ReplaceNaNOutputSpec
+
+    def _list_outputs(self):
+        outputs=self.output_spec().get()
+        outputs["out_file"] = os.path.abspath(self.inputs.out_file)
+        return outputs

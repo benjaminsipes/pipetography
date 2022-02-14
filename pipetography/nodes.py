@@ -602,6 +602,15 @@ class PostProcNodes:
         )
         self.fit_tensor = Node(FitTensor(out_file="dti.mif"), name="dwi2tensor",)
         self.tensor_FA = Node(TensorMetrics(out_fa="fa.mif"), name="tensor2metrics",)
+        self.replaceNaN = Node(
+            ppt.ReplaceNaN(
+                out_file="FA_nonan.mif",
+                replace_val=0.0,
+                if_operand=True,
+                finite_operand=True,
+            ),
+            name="ReplaceNaN",
+        )
         self.tcksample = Node(
             ppt.TckSample(
                 out_file="mean_FA_per_streamline.csv", stat_tck="mean",
